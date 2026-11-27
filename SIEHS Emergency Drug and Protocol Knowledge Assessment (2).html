@@ -1,0 +1,811 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>SIEHS Emergency Drug and Protocol Knowledge Assessment</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: centered night-road hero with the real ambulance; quiz screen with section tabs and a road progress bar; executive review dashboard. */
+:root{
+  --bg:#f3f6fb; --surface:#ffffff; --surface-2:#eaf0f8; --fg:#0e1d33; --muted:#53647d; --line:#d5deeb;
+  --navy:#0a2342; --green:#16984f; --green-soft:#e0f5ea; --red:#d62839; --red-soft:#fde6e9;
+  --blue:#1c6fe0; --blue-soft:#e3eefd; --amber:#e89b0c; --amber-soft:#fff2d6;
+  --hero-fg:#ffffff; --hero-muted:#b9c8de; --shadow:0 10px 30px rgba(10,35,66,.12);
+  --font-d:"Space Grotesk","Segoe UI",system-ui,sans-serif; --font-b:"Inter","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#08111f; --surface:#0f1c30; --surface-2:#16263f; --fg:#e8eef8; --muted:#9db0c9; --line:#25385a;
+  --green:#34c27a; --green-soft:#10331f; --red:#ff5a6a; --red-soft:#3a1620; --blue:#5c9cff; --blue-soft:#12284a;
+  --amber:#f5b83d; --amber-soft:#3a2b0a; --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#08111f; --surface:#0f1c30; --surface-2:#16263f; --fg:#e8eef8; --muted:#9db0c9; --line:#25385a;
+  --green:#34c27a; --green-soft:#10331f; --red:#ff5a6a; --red-soft:#3a1620; --blue:#5c9cff; --blue-soft:#12284a;
+  --amber:#f5b83d; --amber-soft:#3a2b0a; --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-b);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+h1,h2,h3{font-family:var(--font-d);line-height:1.15;margin:0;text-wrap:balance}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.lastline[hidden]{display:none}
+
+/* ---------- Hero ---------- */
+.hero{margin-top:calc(-1*env(safe-area-inset-top,0px));margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px));
+  background:radial-gradient(1200px 500px at 85% -10%,#1d5fc4 0%,transparent 60%),radial-gradient(700px 400px at 5% 110%,rgba(22,152,79,.35),transparent 60%),linear-gradient(160deg,#07172e 0%,#0c2d57 55%,#0a2342 100%);
+  color:var(--hero-fg);padding-block:calc(env(safe-area-inset-top,0px) + 30px) 0;position:relative;overflow:hidden}
+.hero-c{display:grid;justify-items:center;text-align:center;gap:14px;padding-bottom:34px}
+.brandline{display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-d);font-weight:600;letter-spacing:.14em;font-size:12px;text-transform:uppercase;color:var(--hero-muted)}
+.siren{display:inline-flex;gap:3px}
+.siren i{width:18px;height:9px;border-radius:3px;background:#ff3347;animation:blink 1s infinite}
+.siren i+i{background:#2f86ff;animation-delay:.5s}
+@keyframes blink{0%,45%{opacity:1;filter:drop-shadow(0 0 6px currentColor)}55%,100%{opacity:.25}}
+.hero h1{font-size:clamp(30px,6vw,56px);letter-spacing:-.02em;max-width:18ch}
+.hero h1 span{background:linear-gradient(90deg,#4be08c,#7fb8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.by{display:inline-flex;gap:8px;align-items:center;padding:7px 16px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);font-size:14px;color:var(--hero-muted)}
+.by b{color:#fff;font-family:var(--font-d);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:13px;color:#fff}
+.chip b{color:#7ff0ad;font-family:var(--font-d)}
+.photo{position:relative;width:min(100%,540px);margin:6px 0 0;border-radius:22px;padding:10px;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.25);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.photo img{display:block;width:100%;height:auto;border-radius:14px;background:#fff}
+.photo figcaption{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--hero-muted);padding:8px 4px 0}
+.glow{position:absolute;inset:-30px;z-index:-1;background:radial-gradient(closest-side,rgba(47,134,255,.45),transparent);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.road{height:66px;position:relative;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));background:#050c18;border-top:3px solid #17365f;overflow:hidden}
+.road::after{content:"";position:absolute;left:0;right:0;top:56%;height:3px;background:repeating-linear-gradient(90deg,#f4c542 0 28px,transparent 28px 56px);animation:dash 1.4s linear infinite}
+@keyframes dash{to{background-position:-56px 0}}
+.road svg{position:absolute;bottom:8px;left:-140px;width:120px;height:60px;animation:drive 9s linear infinite;z-index:1}
+@keyframes drive{to{left:105%}}
+
+/* ---------- Cards / forms ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.start{padding:26px;display:grid;gap:16px;max-width:760px;margin:28px auto 0}
+.start h2{font-size:22px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:grid;gap:6px;font-weight:500;font-size:14px;color:var(--muted)}
+input,select{font:inherit;color:var(--fg);background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;width:100%}
+input:focus,select:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 30%,transparent)}
+.err{color:var(--red);font-size:14px;min-height:1.2em;margin:0}
+.btn{border:0;border-radius:14px;padding:14px 22px;font-weight:600;font-family:var(--font-d);font-size:17px;color:#fff;
+  background:linear-gradient(135deg,var(--green),#0f7a3f);box-shadow:0 8px 20px rgba(22,152,79,.35);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.red{background:linear-gradient(135deg,#e5384a,#b81d2e);box-shadow:0 8px 20px rgba(214,40,57,.3)}
+.btn.ghost{background:var(--surface-2);color:var(--fg);box-shadow:none;border:1.5px solid var(--line)}
+.btn.sm{padding:9px 16px;font-size:15px;border-radius:12px}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.lastline{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--green-soft);border:1px solid var(--green)}
+.lastline b{font-family:var(--font-d);font-size:28px;color:var(--green)}
+.hint{color:var(--muted);font-size:13px}
+.pick{max-width:1040px;margin:30px auto 0}
+.pick h3{font-size:20px;text-align:center}
+.pick p{text-align:center;margin:6px 0 16px;color:var(--muted)}
+.areas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.area{display:grid;gap:4px;text-align:left;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--c);color:var(--fg);transition:transform .15s,box-shadow .15s}
+.area:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.area b{font-family:var(--font-d);font-size:17px}
+.area span{font-size:13px;color:var(--muted)}
+.area em{font-style:normal;font-size:12px;font-weight:600;color:var(--c);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+
+/* ---------- Quiz ---------- */
+.qhead{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:12px 0 10px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.qtitle{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.qtitle b{font-family:var(--font-d);font-size:15px;min-width:0;overflow-wrap:anywhere}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--line);padding:4px 12px;border-radius:999px;font-size:13px;font-variant-numeric:tabular-nums}
+.pill.score{background:var(--green-soft);border-color:var(--green);color:var(--green);font-weight:600}
+.pill.streak{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);font-weight:600}
+.track{position:relative;height:56px;border-radius:14px;background:#0a1626;overflow:hidden;border:1px solid var(--line)}
+.track .lane{position:absolute;left:0;right:64px;top:34px;height:3px;background:repeating-linear-gradient(90deg,#f4c542 0 14px,transparent 14px 28px)}
+.track .done{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(22,152,79,.4),rgba(22,152,79,.05));width:0;transition:width .5s}
+.track .amb{position:absolute;bottom:6px;width:76px;height:38px;left:0;transition:left .5s cubic-bezier(.3,.8,.3,1)}
+.track .hosp{position:absolute;right:8px;bottom:6px;width:44px;height:44px}
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:10px;padding:2px 0 4px;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tabbtn{flex:none;display:grid;gap:1px;text-align:left;padding:8px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-bottom:4px solid var(--c);min-width:128px}
+.tabbtn b{font-family:var(--font-d);font-size:13px;line-height:1.2}
+.tabbtn small{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tabbtn[aria-current="true"]{background:var(--c);color:#fff;border-color:var(--c)}
+.tabbtn[aria-current="true"] small{color:rgba(255,255,255,.85)}
+.qbody{margin-top:14px;padding:24px;animation:rise .35s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.tag{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--surface))}
+.tag.plain{color:var(--muted);background:var(--surface-2)}
+.qnum{margin-left:auto;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.qtext{font-size:clamp(19px,2.6vw,24px);font-family:var(--font-d);font-weight:600;margin-bottom:18px;line-height:1.3}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--fg);transition:border-color .15s,transform .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--blue);transform:translateX(3px)}
+.opt .k{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--surface-2);font-family:var(--font-d);font-weight:700;font-size:14px}
+.opt .t{min-width:0;padding-top:3px;overflow-wrap:anywhere}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.right .k{background:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.wrong .k{background:var(--red);color:#fff}
+.opt.dim{opacity:.55}
+.fb{margin-top:16px;padding:14px 16px;border-radius:14px;font-size:15px;animation:rise .3s}
+.fb.ok{background:var(--green-soft);border:1px solid var(--green)}
+.fb.no{background:var(--red-soft);border:1px solid var(--red)}
+.fb.sk{background:var(--amber-soft);border:1px solid var(--amber)}
+.fb b{font-family:var(--font-d)}
+.sec-done{margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--blue-soft);border:1px solid var(--blue);font-size:14px}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.actions .r{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.map{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.map summary{cursor:pointer;font-weight:600;font-family:var(--font-d)}
+.grid{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin-top:12px}
+.grid button{aspect-ratio:1;min-width:0;padding:0;border-radius:6px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.grid button.ok{background:var(--green);border-color:var(--green);color:#fff}
+.grid button.no{background:var(--red);border-color:var(--red);color:#fff}
+.grid button.sk{background:var(--amber-soft);border-color:var(--amber);color:var(--amber)}
+.grid button.cur{outline:3px solid var(--blue);outline-offset:1px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.finrow{margin-top:14px;display:flex;justify-content:center}
+
+/* ---------- Result ---------- */
+.rhero{margin-top:calc(-1*env(safe-area-inset-top,0px));margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));
+  padding:calc(env(safe-area-inset-top,0px) + 26px) max(16px,env(safe-area-inset-left,0px)) 0;color:#fff;
+  background:radial-gradient(900px 400px at 15% -20%,#1d5fc4,transparent 60%),linear-gradient(160deg,#07172e,#0c2d57)}
+.rgrid{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding-bottom:28px}
+.ring{position:relative;width:210px;height:210px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .c b{font-family:var(--font-d);font-size:60px;line-height:1;font-variant-numeric:tabular-nums}
+.ring .c span{font-size:13px;color:var(--hero-muted);letter-spacing:.1em;text-transform:uppercase}
+.rtitle h2{font-size:clamp(24px,4vw,38px);overflow-wrap:anywhere}
+.grade{display:inline-block;margin:10px 0 8px;padding:6px 14px;border-radius:999px;font-weight:600;font-family:var(--font-d);background:var(--gc);color:#08111f}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--hero-muted);font-size:14px}
+.meta b{color:#fff;font-weight:600}
+.sec{margin-top:26px}
+.sec>h3{font-size:20px;margin-bottom:12px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.tile b{display:block;font-family:var(--font-d);font-size:30px;font-variant-numeric:tabular-nums}
+.tile span{font-size:13px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.two>*{min-width:0}
+.dom{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:4px 10px;align-items:center;margin-bottom:14px}
+.dom .n{font-weight:600;font-size:14px}
+.dom .n small{color:var(--muted);font-weight:400}
+.dom .p{text-align:right;font-family:var(--font-d);font-weight:700;font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;height:12px;border-radius:8px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:8px;background:var(--c);transition:width 1s cubic-bezier(.3,.8,.3,1)}
+.panel{padding:20px}
+.panel h4{margin:0 0 8px;font-family:var(--font-d);font-size:16px}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.panel.good{border-top:5px solid var(--green)} .panel.focus{border-top:5px solid var(--amber)}
+.filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.filters button{border:1.5px solid var(--line);background:var(--surface);color:var(--fg);padding:7px 14px;border-radius:999px;font-size:14px}
+.filters button[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.rev{display:grid;gap:10px}
+.ri{padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--green)}
+.ri.no{border-left-color:var(--red)} .ri.sk{border-left-color:var(--amber)}
+.ri .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-size:13px;color:var(--muted)}
+.ri .q{font-weight:600;margin-bottom:8px}
+.ri .a{font-size:14px;display:grid;gap:3px}
+.ri .a em{font-style:normal;font-weight:600}
+.ri .x{margin-top:8px;font-size:14px;color:var(--muted)}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+textarea.sum{width:100%;min-height:150px;font:inherit;font-size:14px;margin-top:10px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+/* ---------- Certificate (fixed light colours, like a printed page) ---------- */
+.cert{background:#fff;color:#0a2342;border:10px solid #0a2342;outline:3px solid #16984f;outline-offset:-20px;position:relative;overflow:hidden;max-width:820px;margin:0 auto;box-shadow:var(--shadow);animation:rise .5s}
+.cert-stripe{height:14px;background:linear-gradient(90deg,#d62839 0 33%,#fff 33% 36%,#16984f 36% 100%)}
+.cert-in{padding:clamp(26px,5vw,48px) clamp(26px,6vw,60px) clamp(22px,4vw,34px);text-align:center;display:grid;gap:8px;justify-items:center}
+.cert .brandline{color:#4a5d78;font-size:11px;flex-wrap:wrap}
+.cert-kicker{font-family:var(--font-d);font-size:clamp(22px,5vw,40px);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.cert-small{margin:6px 0 0;color:#4a5d78;font-size:14px}
+.cert-name{font-family:var(--font-d);font-size:clamp(26px,6.4vw,46px);font-weight:700;color:#16984f;overflow-wrap:anywhere;border-bottom:2px solid #d5deeb;padding:0 18px 4px;max-width:100%;line-height:1.2}
+.cert-desig{font-weight:600;color:#12386b}
+.cert-title{font-family:var(--font-d);font-size:clamp(18px,3.6vw,28px);font-weight:700;max-width:24ch;line-height:1.2}
+.cert-level{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:#12386b;padding:4px 14px;border-radius:999px}
+.cert-score{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.cert-score b{font-family:var(--font-d);font-size:clamp(34px,8vw,58px);color:#d62839;line-height:1}
+.cert-score span{color:#4a5d78;font-size:14px}
+.cert-foot{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end;width:100%;margin-top:14px}
+.cert-foot>div{display:grid;gap:2px;border-top:2px solid #0a2342;padding-top:6px;font-size:13px}
+.cert-foot b{font-family:var(--font-d);font-size:15px;overflow-wrap:anywhere}
+.cert-foot span{color:#4a5d78;font-size:12px}
+.seal{width:76px;height:76px}
+.cert-id{font-size:12px;color:#4a5d78;margin-top:8px;overflow-wrap:anywhere}
+@media(max-width:520px){.cert{border-width:7px;outline-offset:-15px}.cert-foot{grid-template-columns:1fr 1fr}.cert-foot .seal{display:none}.cert .brandline .siren:last-child{display:none}}
+
+@media(max-width:820px){
+  .two,.rgrid{grid-template-columns:1fr}
+  .areas{grid-template-columns:1fr 1fr}
+  .tiles{grid-template-columns:1fr 1fr}
+  .rgrid{justify-items:center;text-align:center}
+  .meta{justify-content:center}
+  .ring{width:180px;height:180px}
+}
+@media(max-width:520px){
+  .fields,.areas{grid-template-columns:1fr}
+  .start{padding:20px}
+  .qbody{padding:18px}
+  .grid{grid-template-columns:repeat(10,1fr)}
+  .actions .btn{flex:1}
+  .actions .r{width:100%;margin-left:0}
+  .row .btn{flex:1 1 100%}
+  .photo figcaption{font-size:11px}
+}
+@media print{.noprint{display:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="amb" viewBox="0 0 120 60">
+      <rect x="3" y="10" width="86" height="36" rx="7" fill="#fff"/>
+      <path d="M89 18h14c4 0 7 2 9 6l5 9c1 2 1 3 1 5v8H89z" fill="#fff"/>
+      <path d="M95 22h8c2 0 4 1 5 3l3 6H95z" fill="#7fb8ff"/>
+      <rect x="3" y="33" width="112" height="5" fill="#d62839"/>
+      <rect x="3" y="38" width="112" height="3" fill="#16984f"/>
+      <rect x="40" y="3" width="10" height="7" rx="2" fill="#ff3347"/>
+      <rect x="51" y="3" width="10" height="7" rx="2" fill="#2f86ff"/>
+      <path d="M24 16h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#d62839"/>
+      <rect x="44" y="17" width="34" height="11" rx="3" fill="#16984f"/>
+      <circle cx="28" cy="47" r="8" fill="#1a2536"/><circle cx="28" cy="47" r="3.5" fill="#cfd8e6"/>
+      <circle cx="96" cy="47" r="8" fill="#1a2536"/><circle cx="96" cy="47" r="3.5" fill="#cfd8e6"/>
+    </symbol>
+    <symbol id="hosp" viewBox="0 0 48 48">
+      <rect x="6" y="12" width="36" height="32" rx="4" fill="#fff"/>
+      <rect x="18" y="32" width="12" height="12" fill="#12386b"/>
+      <path d="M21 16h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#d62839" transform="translate(0 -3)"/>
+      <rect x="10" y="30" width="5" height="5" fill="#7fb8ff"/><rect x="33" y="30" width="5" height="5" fill="#7fb8ff"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ================= WELCOME ================= -->
+<main id="welcome">
+  <section class="hero">
+    <div class="wrap hero-c">
+      <div class="brandline"><span class="siren"><i></i><i></i></span>SIEHS 1122 · Sindh Integrated Emergency &amp; Health Services<span class="siren"><i></i><i></i></span></div>
+      <h1>SIEHS Operations EMS <span>Emergency Drug and Protocol Knowledge Assessment</span></h1>
+      <div class="by">Prepared by <b>Irum Naz</b></div>
+      <figure class="photo">
+        <span class="glow"></span>
+        <img src="data:image/jpeg;base64,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" alt="SIEHS 1122 ambulance, Sindh Integrated Emergency and Health Services">
+        <figcaption><span>SIEHS-1122 emergency ambulance</span><span>Call 1122</span></figcaption>
+      </figure>
+      <div class="chips">
+        <span class="chip"><b>100</b> questions</span>
+        <span class="chip"><b>1</b> mark each</span>
+        <span class="chip"><b>6</b> learning areas</span>
+        <span class="chip">Beginner level</span>
+        <span class="chip">Certificate at <b>70+</b></span>
+      </div>
+    </div>
+    <div class="road" aria-hidden="true"><svg><use href="#amb"/></svg></div>
+  </section>
+
+  <div class="wrap">
+    <form class="card start" id="startForm" novalidate>
+      <div id="lastBox" class="lastline" hidden>
+        <b id="lastScore">0</b>
+        <div><div style="font-weight:600">Latest result on this device</div><div class="hint" id="lastMeta"></div></div>
+      </div>
+      <h2>Start your assessment</h2>
+      <div class="fields">
+        <label for="name">Full name
+          <input id="name" autocomplete="name" placeholder="e.g. Irum Naz" maxlength="60">
+        </label>
+        <label for="desig">Designation
+          <select id="desig">
+            <option value="">e.g. District Manager</option>
+            <option>District Manager</option><option>Station Coordinator</option><option>Paramedic</option>
+            <option>EMT</option><option>EMA</option><option>EVO</option><option>Senior Regional Manager</option>
+            <option>Zonal Manager</option><option>Manager Operations</option>
+            <option value="__other">Other (type your own)</option>
+          </select>
+        </label>
+      </div>
+      <label for="otherDesig" id="otherWrap" hidden>Your designation
+        <input id="otherDesig" placeholder="Type your designation" maxlength="60">
+      </label>
+      <p class="err" id="startErr" role="alert"></p>
+      <button class="btn" type="submit" id="startAll">Start full assessment</button>
+    </form>
+
+    <section class="pick">
+      <h3>Or begin with one learning area</h3>
+      <p>Each area opens as its own section, from drug basics to doses and protocols. You can jump between areas, skip questions and finish whenever you like.</p>
+      <div class="areas" id="areas"></div>
+    </section>
+  </div>
+</main>
+
+<!-- ================= QUIZ ================= -->
+<main id="quiz" hidden>
+  <div class="wrap">
+    <div class="qhead">
+      <div class="qtitle">
+        <b id="qwho"></b>
+        <div class="pills">
+          <span class="pill" id="qcount">Question 1 of 100</span>
+          <span class="pill" id="qtime">0:00</span>
+          <span class="pill streak" id="qstreak" hidden>Streak 0</span>
+          <span class="pill score" id="qscore">Score 0</span>
+        </div>
+      </div>
+      <div class="track" aria-hidden="true">
+        <div class="done" id="done"></div><div class="lane"></div>
+        <svg class="amb" id="ambMove"><use href="#amb"/></svg>
+        <svg class="hosp"><use href="#hosp"/></svg>
+      </div>
+      <nav class="tabs" id="tabs" aria-label="Learning areas"></nav>
+    </div>
+    <article class="card qbody" id="qbody" aria-live="polite"></article>
+
+    <details class="map">
+      <summary>Question map (tap a number to jump)</summary>
+      <div class="grid" id="dots"></div>
+      <div class="legend"><span><i style="background:var(--green)"></i>Correct</span><span><i style="background:var(--red)"></i>Incorrect</span><span><i style="background:var(--amber-soft);border:1px solid var(--amber)"></i>Skipped</span><span><i style="background:var(--surface-2);border:1px solid var(--line)"></i>Not seen</span></div>
+    </details>
+    <div class="finrow"><button type="button" class="btn red sm" id="finishNow">Finish and see result</button></div>
+  </div>
+</main>
+
+<!-- ================= RESULT ================= -->
+<main id="result" hidden>
+  <section class="rhero">
+    <div class="wrap">
+      <div class="rgrid">
+        <div class="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="10"/>
+            <circle id="ringArc" cx="60" cy="60" r="52" fill="none" stroke="#4be08c" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition:stroke-dashoffset 1.4s cubic-bezier(.3,.8,.3,1)"/>
+          </svg>
+          <div class="c"><b id="rScore">0</b><span>out of 100</span></div>
+        </div>
+        <div class="rtitle">
+          <div class="brandline" style="justify-content:flex-start"><span class="siren"><i></i><i></i></span>Result and certificate</div>
+          <h2 id="rName" style="margin-top:8px"></h2>
+          <span class="grade" id="rGrade"></span>
+          <div class="meta" id="rMeta"></div>
+        </div>
+      </div>
+    </div>
+    <div class="road" aria-hidden="true"><svg><use href="#amb"/></svg></div>
+  </section>
+
+  <div class="wrap">
+    <section class="sec"><div class="tiles" id="tiles"></div></section>
+
+    <section class="sec two">
+      <div class="card panel">
+        <h3 style="font-size:20px;margin-bottom:14px">Performance by learning area</h3>
+        <div id="domains"></div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div class="card panel good"><h4>Strengths</h4><ul id="strengths"></ul></div>
+        <div class="card panel focus"><h4>Focus areas</h4><ul id="focus"></ul></div>
+      </div>
+    </section>
+
+    <section class="sec"><div class="card panel"><h4>Executive summary</h4><p id="summary" style="margin:0"></p></div></section>
+
+    <section class="sec" id="certSec">
+      <h3>Your certificate</h3>
+      <div class="card panel" id="certLock" hidden><h4>Certificate locked</h4><p id="certLockMsg" style="margin:0"></p></div>
+      <div id="certWrap" hidden>
+        <div class="cert" id="cert">
+          <div class="cert-stripe"></div>
+          <div class="cert-in">
+            <div class="brandline"><span class="siren"><i></i><i></i></span>SIEHS 1122 · Sindh Integrated Emergency &amp; Health Services<span class="siren"><i></i><i></i></span></div>
+            <div class="cert-kicker">Certificate of Completion</div>
+            <p class="cert-small">This certifies that</p>
+            <div class="cert-name" id="cName"></div>
+            <div class="cert-desig" id="cDesig"></div>
+            <p class="cert-small">has successfully completed the</p>
+            <div class="cert-title">Emergency Drug and Protocol Knowledge Assessment</div>
+            <div class="cert-level">Beginner level</div>
+            <div class="cert-score"><b id="cScore"></b><span>out of 100 · <em id="cGrade" style="font-style:normal;font-weight:600"></em></span></div>
+            <div class="cert-foot">
+              <div><b id="cDate"></b><span>Date</span></div>
+              <svg class="seal" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#16984f"/><circle cx="50" cy="50" r="37" fill="#fff"/><path d="M44 28h12v16h16v12H56v16H44V56H28V44h16z" fill="#d62839"/></svg>
+              <div><b>Irum Naz</b><span>District Manager, SIEHS 1122</span></div>
+            </div>
+            <div class="cert-id">Certificate no. <b id="cId"></b> · Internal training record</div>
+          </div>
+        </div>
+        <p class="hint" style="text-align:center">To keep a copy, take a screenshot of the certificate. "Copy result summary" below also includes the certificate number.</p>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h3>Question review</h3>
+
+      <div class="filters" id="filters">
+        <button type="button" data-f="all" aria-pressed="true">All 100</button>
+        <button type="button" data-f="no" aria-pressed="false">Incorrect</button>
+        <button type="button" data-f="sk" aria-pressed="false">Skipped</button>
+        <button type="button" data-f="ok" aria-pressed="false">Correct</button>
+      </div>
+      <div class="rev" id="rev"></div>
+    </section>
+
+    <div class="row noprint">
+      <button class="btn" id="retake" type="button">Retake assessment</button>
+      <button class="btn ghost" id="backQuiz" type="button">Continue unanswered</button>
+      <button class="btn ghost" id="copySum" type="button">Copy result summary</button>
+      <button class="btn ghost" id="toStart" type="button">Back to title page</button>
+    </div>
+    <textarea class="sum" id="sumBox" readonly hidden aria-label="Result summary"></textarea>
+  </div>
+</main>
+<canvas id="confetti" hidden></canvas>
+
+<script>
+const BANK = [
+/* ---------- Drug Basics (18) ---------- */
+["db","Angisid","Glyceryl Trinitrate (Angisid) is used for which problem?","Chest pain / angina",["Seizures","Vomiting","Asthma"],"Angisid is given for chest pain and angina."],
+["db","Disprin","Aspirin (Disprin) is given for which problem?","Heart attack (MI)",["Allergy","Diabetes","Bleeding"],"Aspirin is given for a heart attack."],
+["db","Kinz","Kinz (Nalbuphine) is given for which problem?","Severe cardiac chest pain due to MI",["Gastric pain","Nausea","Asthma"],"Kinz relieves severe chest pain from a heart attack."],
+["db","TXA","Tranexamic Acid (TXA) is used for which problem?","Severe or uncontrolled bleeding",["Seizures","Allergy","Low blood sugar"],"TXA helps stop serious bleeding."],
+["db","Naloxone","Naloxone (Nalox) is used for which problem?","Opioid / narcotic overdose",["Asthma","Chest pain","Fever"],"Naloxone reverses opioid overdose, such as morphine, Kinz, tramadol or heroin."],
+["db","ST-MOM","ST-MOM (Misoprostol) is used for which problem?","Post-partum hemorrhage (PPH)",["Seizures","Vomiting","Heart attack"],"ST-MOM is used for bleeding after childbirth."],
+["db","Maxolon","Metoclopramide (Maxolon) is used for which problem?","Nausea and vomiting",["Chest pain","Bleeding","Seizures"],"Maxolon treats nausea and vomiting."],
+["db","Lasix","Furosemide (Lasix) is used for which problem?","Edema (fluid swelling)",["Fits","Allergy","Low sugar"],"Lasix is used for pulmonary, pedal, sacral or generalized edema."],
+["db","Dormicum","Midazolam (Dormicum) is used for which problem?","Seizures",["Pain","Bleeding","Gastritis"],"Dormicum stops seizures."],
+["db","Avil","Pheniramine (Avil) is used for which problem?","Allergic reaction",["Seizures","Heart attack","Low blood sugar"],"Avil treats allergic reactions."],
+["db","Ventolin","Salbutamol (Ventolin) is used for which problem?","Asthma and shortness of breath",["Vomiting","Bleeding","Seizures"],"Ventolin opens the airways in asthma, COPD and shortness of breath."],
+["db","Charcoal","Activated Charcoal is used for which problem?","Ingested poison",["Chest pain","Fits","Heavy bleeding"],"Charcoal is given after a poison has been swallowed."],
+["db","Epinephrine","Epinephrine is used for which two emergencies?","Cardiac arrest and anaphylactic shock",["Asthma and gastritis","Seizures and vomiting","Pain and fever"],"Epinephrine is for cardiac arrest and severe allergic shock."],
+["db","Omeprazole","Omeprazole (Risek) is used for which problem?","Gastritis and abdominal pain",["Seizures","Allergy","Overdose"],"Omeprazole treats gastritis, dyspepsia, gastric ulcer and abdominal pain."],
+["db","Voren","Diclofenac (Voren) is used for which problem?","Pain from trauma, such as a road accident or fall",["Asthma","Low blood sugar","Cardiac arrest"],"Voren is the pain injection for trauma, falls, assault and kidney pain."],
+["db","Dextrose","Which drug is given for low blood sugar?","25% Dextrose",["Naloxone","Furosemide","Midazolam"],"Dextrose 25% corrects low blood sugar."],
+["db","Terms","What does RBS stand for?","Random Blood Sugar",["Red Blood System","Rapid Breathing Score","Regular Body Signs"],"RBS is the quick blood sugar check."],
+["db","Terms","What does MI stand for?","Myocardial Infarction (heart attack)",["Medical Injury","Muscle Inflammation","Minor Infection"],"MI means heart attack."],
+
+/* ---------- Doses (23) ---------- */
+["ds","Angisid dose","What is the dose of Glyceryl Trinitrate (Angisid)?","0.5 mg",["5 mg","50 mg","0.05 mg"],"The Angisid dose is 0.5 mg."],
+["ds","Disprin dose","What is the dose of Aspirin (Disprin) for a heart attack?","300 mg",["30 mg","3 mg","3000 mg"],"The Aspirin dose is 300 mg."],
+["ds","Kinz dose","What is the dose of Kinz (Nalbuphine)?","10 mg",["1 mg","100 mg","50 mg"],"One ampule of Kinz is 10 mg."],
+["ds","TXA dose","What is the adult dose of Tranexamic Acid?","500 mg to 1000 mg",["5 mg to 10 mg","50 mg to 100 mg","5000 mg"],"The adult TXA dose is 500 mg to 1000 mg."],
+["ds","Naloxone dose","What is the first adult dose of Naloxone?","0.4 mg",["4 mg","40 mg","0.04 mg"],"Start with 0.4 mg, then 0.8 mg for up to 2 doses at 1 minute intervals."],
+["ds","Naloxone dose","If an adult does not respond to Naloxone, the dose is increased to:","2 mg",["0.1 mg","0.2 mg","20 mg"],"If there is no response, increase to 2 mg for 1 dose."],
+["ds","Naloxone dose","What is the starting Naloxone dose for a child (1 month to 11 years)?","0.1 mg/kg",["1 mg/kg","0.01 mg/kg","10 mg/kg"],"Children start at 0.1 mg/kg, with a maximum of 2 mg per dose."],
+["ds","ST-MOM dose","How many ST-MOM (Misoprostol) tablets are given as the first PPH dose?","3 tablets (600 mcg)",["1 tablet (200 mcg)","5 tablets (1000 mcg)","10 tablets (2000 mcg)"],"The first dose is 3 tablets (600 mcg). Treatment uses 5 tablets in total."],
+["ds","Maxolon dose","What is the adult dose of Metoclopramide (Maxolon)?","10 mg",["1 mg","100 mg","50 mg"],"The Maxolon dose for patients over 12 years is 10 mg."],
+["ds","Maxolon dose","How often can Maxolon be given to a patient over 12 years?","Up to 3 times a day",["Once only","Up to 6 times a day","Up to 10 times a day"],"Maxolon is allowed up to 3 times a day."],
+["ds","Lasix dose","What is the adult dose of Furosemide (Lasix)?","20 mg to 40 mg IV stat",["2 mg to 4 mg","200 mg to 400 mg","1 mg to 2 mg"],"Adults get 20 mg to 40 mg IV stat."],
+["ds","Dormicum dose","What is the adult dose of Midazolam (Dormicum) for seizures?","2.5 mg to 5 mg IV",["25 mg to 50 mg","0.25 mg to 0.5 mg","15 mg to 25 mg"],"The adult dose is 2.5 mg to 5 mg IV."],
+["ds","Dormicum dose","What is the maximum adult dose of Midazolam (Dormicum)?","15 mg",["5 mg","6 mg","50 mg"],"The adult maximum is 15 mg."],
+["ds","Avil dose","What is the adult dose of Pheniramine (Avil)?","45.5 mg (2 ml)",["4.55 mg (0.2 ml)","455 mg (20 ml)","22.75 mg (1 ml)"],"Adults get 45.5 mg, which is 2 ml, IV stat."],
+["ds","Avil dose","What is the Avil dose for a child aged 5 to 10 years?","22.75 mg (1 ml)",["45.5 mg (2 ml)","2.275 mg (0.1 ml)","4.55 mg (0.2 ml)"],"Children aged 5 to 10 years get half the adult dose, 22.75 mg (1 ml)."],
+["ds","Ventolin dose","What is the adult nebulized dose of Salbutamol (Ventolin)?","2.5 to 5 mg (0.5 to 1 ml)",["25 to 50 mg (5 to 10 ml)","0.25 to 0.5 mg (0.05 to 0.1 ml)","10 to 20 mg (2 to 4 ml)"],"Adults get 2.5 to 5 mg, which is 0.5 to 1 ml."],
+["ds","Ventolin dose","What is the Salbutamol dose for a child under 12 years?","0.5 ml (2.5 mg)",["2 ml (10 mg)","0.1 ml (0.5 mg)","5 ml (25 mg)"],"Children under 12 get 0.5 ml (2.5 mg). The maximum is 5 mg."],
+["ds","Charcoal dose","What is the adult dose of Activated Charcoal?","50 g",["5 g","500 g","0.5 g"],"The adult dose is 50 g."],
+["ds","Epinephrine dose","What is the adult IV dose of Epinephrine in cardiac arrest?","1 mg every 3 to 5 minutes",["0.5 mg every 3 to 5 minutes","10 mg every 3 to 5 minutes","1 mg every 30 minutes"],"Adults get 1 mg IV every 3 to 5 minutes as required."],
+["ds","Epinephrine dose","What is the adult IM dose of Epinephrine in anaphylactic shock?","0.5 mg",["5 mg","1 mg","0.05 mg"],"Adults get 0.5 mg IM, repeated every 5 to 15 minutes if there is no improvement."],
+["ds","Omeprazole dose","What is the adult Omeprazole dose for gastritis or gastric ulcer?","40 mg",["4 mg","400 mg","80 mg"],"Gastritis, gastric ulcer and dyspepsia need 40 mg."],
+["ds","Omeprazole dose","What is the Omeprazole dose for an upper GI bleed?","80 mg",["20 mg","40 mg","8 mg"],"An upper GI bleed needs 80 mg."],
+["ds","Voren dose","What is the adult dose of Diclofenac (Voren)?","75 mg",["7.5 mg","750 mg","150 mg"],"The adult dose is 75 mg IM stat."],
+
+/* ---------- How to Give (16) ---------- */
+["hg","Angisid route","How is Glyceryl Trinitrate (Angisid) given?","Under the tongue (sublingual)",["Swallowed whole with water","Injected into a muscle","Inhaled by nebulizer"],"Angisid is given under the tongue."],
+["hg","Angisid route","What should the patient do with the Angisid tablet?","Suck it and not swallow it",["Chew and swallow it","Swallow it with water","Crush it into a drink"],"Ask the patient to suck it and keep it in the mouth. Do not swallow."],
+["hg","Disprin route","How is Aspirin (Disprin) taken for a heart attack?","Chewed, then swallowed with a small sip of water",["Swallowed whole with a full glass of water","Placed under the tongue","Injected into a vein"],"The patient chews the tablet and swallows the rest with a small sip of water."],
+["hg","Kinz method","How much N/S is used to dilute 1 ampule of Kinz?","7 ml",["70 ml","1 ml","100 ml"],"Dilute 1 ampule of Kinz with 7 ml N/S."],
+["hg","Kinz method","How much diluted Kinz is given each time, gradually, until the pain is relieved?","2 ml",["10 ml","0.2 ml","20 ml"],"Give 2 ml each time and repeat after 5 minutes if pain remains."],
+["hg","Kinz method","After how long can the Kinz dose be repeated?","After 5 minutes",["After 5 seconds","After 1 hour","After 5 hours"],"Repeat after 5 minutes if the pain is not relieved."],
+["hg","TXA method","How is Tranexamic Acid diluted for an adult?","In 100 ml N/S",["In 10 ml N/S","In 1 ml N/S","In 1000 ml N/S"],"Dilute TXA in 100 ml N/S."],
+["hg","TXA method","Over how long is diluted Tranexamic Acid given?","10 to 15 minutes",["10 to 15 seconds","1 to 2 hours","30 seconds"],"Give TXA over 10 to 15 minutes."],
+["hg","Naloxone method","How is Naloxone diluted?","In 10 ml N/S",["In 100 ml N/S","In 1 ml N/S","In 500 ml N/S"],"Dilute Naloxone in 10 ml N/S."],
+["hg","Naloxone method","How fast is Naloxone given?","Slowly over 30 seconds",["Over 30 minutes","All at once in 1 second","Over 3 hours"],"Give Naloxone slowly over 30 seconds."],
+["hg","Maxolon method","How is Maxolon (Metoclopramide) given?","IV slowly over 3 minutes",["By mouth","Under the tongue","As fast as possible"],"Give Maxolon IV slowly over 3 minutes."],
+["hg","Voren method","How is Voren (Diclofenac) given?","IM stat without dilution",["IV after diluting in 100 ml N/S","Under the tongue","By nebulizer"],"Voren is given IM stat without dilution."],
+["hg","Ventolin method","How is Salbutamol diluted for nebulization?","In 2 to 2.5 ml N/S",["In 100 ml N/S","In 20 ml of dextrose","It is not diluted"],"Dilute Salbutamol in 2 to 2.5 ml N/S."],
+["hg","Omeprazole method","How is Omeprazole diluted and given?","In 100 ml N/S over 10 to 15 minutes",["In 10 ml N/S over 10 seconds","Undiluted into the muscle","In 5 ml of water by mouth"],"Dilute Omeprazole in 100 ml N/S and give over 10 to 15 minutes."],
+["hg","Ventolin drops","How many drops are in 1 ml of Salbutamol (5 mg)?","20 drops",["5 drops","10 drops","50 drops"],"1 ml equals 5 mg, which is 20 drops."],
+["hg","Ventolin drops","How many drops are in 0.25 ml of Salbutamol (1.25 mg)?","5 drops",["1 drop","20 drops","25 drops"],"0.25 ml equals 1.25 mg, which is 5 drops."],
+
+/* ---------- Safety Checks (15) ---------- */
+["sf","Angisid safety","Angisid should NOT be given when the systolic BP is below:","100 mm Hg",["60 mm Hg","140 mm Hg","200 mm Hg"],"Do not give Angisid if systolic BP is below 100 mm Hg."],
+["sf","Angisid safety","Angisid should NOT be given to a patient who regularly takes:","Viagra (Sildenafil)",["Paracetamol","Vitamin C","Antacid"],"Angisid and Viagra together can drop the blood pressure dangerously."],
+["sf","Angisid safety","Angisid should NOT be given when the patient has a:","Head injury",["Fracture","Small wound","Mild burn"],"Head injury is a caution for Angisid."],
+["sf","Disprin safety","Aspirin (Disprin) should NOT be given to a patient with:","A bleeding disorder",["Chest pain","Heart attack signs","Sweating"],"A bleeding disorder is a caution. Asthma and NSAID allergy are also cautions."],
+["sf","Kinz safety","Kinz should NOT be given to a patient who is:","Drowsy with a low GCS",["Awake and alert","Sitting up","Complaining of chest pain"],"A drowsy patient may not keep the airway open."],
+["sf","TXA safety","Tranexamic Acid should NOT be given to patients aged:","Under 16 years",["Over 16 years","Over 40 years","Over 60 years"],"TXA is not for patients under 16 years."],
+["sf","TXA safety","Tranexamic Acid is NOT given for which type of injury?","Isolated head injury",["Uncontrolled bleeding","Severe trauma with shock","Post-partum hemorrhage"],"Isolated head injury is a caution for TXA."],
+["sf","ST-MOM safety","ST-MOM (Misoprostol) should NOT be given in which situation?","Ante-partum hemorrhage (bleeding before delivery)",["Post-partum hemorrhage (PPH)","Prevention of PPH","Treatment of PPH"],"Ante-partum hemorrhage is a caution for ST-MOM."],
+["sf","Maxolon safety","Maxolon should NOT be given to a patient with:","Epilepsy or a seizure disorder",["Nausea","Vomiting after a fall","Dyspepsia"],"Maxolon can trigger seizures in epilepsy."],
+["sf","Lasix safety","Furosemide (Lasix) should NOT be given when the systolic BP is below:","100 mm Hg",["40 mm Hg","120 mm Hg","180 mm Hg"],"Low blood pressure below 100 mm Hg is a caution for Lasix."],
+["sf","Dormicum safety","Midazolam (Dormicum) should NOT be given when the patient has:","A compromised airway or severe breathing depression",["An active seizure","Repeated jerking","Twitching of the arm"],"Dormicum can slow breathing further."],
+["sf","Avil safety","Pheniramine (Avil) should NOT be given to:","Newborns and children under 5 years",["Adults with allergy","Children aged 5 to 10 years","Anyone over 10 years"],"Avil is not for newborns or children under 5 years."],
+["sf","Ventolin safety","Salbutamol (Ventolin) should NOT be given to a patient with:","Eclampsia or a history of cardiac disease",["Asthma","COPD","Shortness of breath"],"Eclampsia and cardiac disease are cautions for Salbutamol."],
+["sf","Charcoal safety","Activated Charcoal can only be given if the patient is:","Fully conscious with a positive gag reflex",["Unconscious","Drowsy","Not responding"],"The gag reflex must be positive."],
+["sf","Voren safety","Voren (Diclofenac) should NOT be given to a patient with:","An active gastric ulcer or GI bleed",["A fall injury","A road accident injury","Kidney pain"],"Active gastric ulcer and GI bleed are cautions for Voren."],
+
+/* ---------- Chief Complaint Protocols (16) ---------- */
+["cp","Code 1","Code 1, Abdominal Pain: which protocol is used?","Omeprazole + NS 100 ml + drip set + cannula",["CPR + AED + Epinephrine","Dormicum + airway monitoring","Naloxone"],"Abdominal pain uses the Omeprazole protocol."],
+["cp","Code 2","Code 2, Allergies: which drug is given?","Avil (Pheniramine), with Epinephrine for a severe reaction",["Voren","Dextrose","Misoprostol"],"Avil for allergy and Epinephrine as per protocol for a severe reaction."],
+["cp","Code 5","Code 5, Back Pain: which drug protocol is used?","Voren / Diclofenac",["Naloxone","Maxolon","Dormicum"],"Back pain uses the Voren / Diclofenac protocol."],
+["cp","Code 6","Code 6, Breathing Problems: which protocol is used?","Oxygen + Ventolin nebulization + Normal Saline",["Omeprazole + drip set","CPR + AED","Dextrose 25%"],"Breathing problems get oxygen and Ventolin nebulization with normal saline."],
+["cp","Code 9","Code 9, Cardiac / Respiratory Arrest: which protocol is used?","CPR + AED + Epinephrine",["MONA","Dormicum","Voren"],"Arrest needs CPR, an AED and Epinephrine."],
+["cp","Code 10","Code 10, Chest Pain: which protocol is used?","MONA: Oxygen + Angisid + Aspirin + Kinz / Nalbuphine",["Oxygen + Ventolin","Naloxone","TXA"],"Chest pain follows the MONA protocol."],
+["cp","Code 12","Code 12, Convulsions / Seizures: which protocol is used?","Dormicum (Midazolam) + airway monitoring",["Naloxone","Avil","Maxolon"],"Seizures need Dormicum and airway monitoring."],
+["cp","Code 13","Code 13, Diabetic Problems: what is the correct order?","Check RBS, give 25% Dextrose, check RBS again",["Give Dextrose, then check RBS once","Give Voren, then check RBS","Give Avil, then 25% Dextrose"],"Pre-RBS, then 25% Dextrose, then post-RBS."],
+["cp","Code 21","Code 21, Hemorrhage / Lacerations: which protocol is used?","Bleeding control + TXA",["Dormicum","Ventolin","Omeprazole"],"Heavy bleeding needs bleeding control and TXA."],
+["cp","Code 23","Code 23, Overdose / Poisoning: which drug is for opioid overdose?","Naloxone",["Avil","Voren","Lasix"],"Naloxone is given for opioid overdose."],
+["cp","Code 24","Code 24, Pregnancy / Childbirth: what is used for PPH?","TXA + ST-MOM (Misoprostol)",["Dormicum + Naloxone","MONA","Ventolin + Oxygen"],"PPH is managed with TXA and ST-MOM."],
+["cp","Code 28","Code 28, Stroke / TIA: which protocol is used?","Stroke assessment + rapid transport",["CPR + AED","Dextrose 25%","Naloxone"],"Stroke needs assessment and rapid transport."],
+["cp","Code 31","Code 31, Unconscious / Fainting: which check is added to ABC?","RBS check",["Chest X-ray","Hearing test","Ear exam"],"Check RBS. If it is low, give Dextrose as per protocol."],
+["cp","Code 29","Code 29, Traffic / Transportation Incident: which protocol is used?","Trauma assessment + bleeding control + pain management",["MONA","Dormicum + airway monitoring","Dextrose protocol"],"Road accidents need trauma assessment, bleeding control and pain management."],
+["cp","Code 30","Code 30, Traumatic Injuries: which drugs may be used?","TXA or Voren as indicated",["Naloxone or Avil","Dormicum or Dextrose","Lasix or Ventolin"],"Traumatic injuries may need TXA for bleeding or Voren for pain."],
+["cp","Code 19","Code 19, Heart Problems / AICD: which protocol is used for chest pain or MI?","MONA",["Dormicum","Naloxone","Ventolin"],"Heart problems with chest pain or MI follow the MONA protocol."],
+
+/* ---------- Sets and Steps (12) ---------- */
+["st","Syringe","Which syringe goes with Tranexamic Acid for heavy bleeding?","5 cc",["30 cc","50 cc","1 cc"],"TXA is drawn up with a 5 cc syringe."],
+["st","Syringe","Which syringe goes with Voren (Diclofenac) for pain?","5 cc",["30 cc","50 cc","1 cc"],"Voren is drawn up with a 5 cc syringe."],
+["st","Omeprazole set","Which items go with Omeprazole injection for gastritis?","N/S 100 ml, drip set and cannula",["N/S 20 ml and nebulizer mask","A 5 cc syringe only","Oxygen and AED"],"Omeprazole is given in N/S 100 ml through a drip set and cannula."],
+["st","Ventolin set","Which items go with Ventolin for asthma?","Oxygen, nebulizer mask and N/S 20 ml",["Drip set and cannula","5 cc syringe and Voren","AED and Epinephrine"],"Ventolin is given by nebulizer mask with oxygen and N/S 20 ml."],
+["st","Low sugar","For low blood sugar, what is the first step?","Check RBS",["Give Dextrose","Give Voren","Give Avil"],"Check RBS first, give 25% Dextrose, then check RBS again."],
+["st","Low sugar","Which strength of Dextrose is given for low blood sugar?","25%",["5%","50%","10%"],"The protocol uses 25% Dextrose."],
+["st","RBS","Which items are used for the RBS check?","Glucometer and glucometer strips",["Thermometer","Stethoscope","BP cuff"],"Use the glucometer with strips for the RBS check."],
+["st","CPR","The cardiac arrest protocol uses CPR and which device?","AED",["Nebulizer","Glucometer","Splint"],"CPR is combined with an AED and Epinephrine."],
+["st","MI protocol","Which injection is used for chest pain due to MI (MI protocol)?","Nalbuphine (Kinz)",["Naloxone","Dormicum","Avil"],"The MI protocol uses Nalbuphine (Kinz)."],
+["st","MONA","In MONA, which letter stands for the pain-relief injection (Kinz / Nalbuphine)?","M",["O","N","A"],"M stands for the pain-relief drug, Kinz in place of morphine."],
+["st","MONA","In MONA, what does the letter O stand for?","Oxygen",["Omeprazole","Opioid antidote","Ointment"],"O stands for Oxygen."],
+["st","MONA","In MONA, what does the letter N stand for?","Nitroglycerin (Angisid)",["Naloxone","Nebulizer","Normal saline"],"N stands for Nitroglycerin, which is Angisid under the tongue."]
+];
+
+
+const DOMAINS = {
+  db:{n:"Drug Basics",c:"#d62839",d:"What each drug is used for"},
+  ds:{n:"Doses",c:"#1c6fe0",d:"How much to give, adult and child"},
+  hg:{n:"How to Give",c:"#16984f",d:"Routes, dilution and timing"},
+  sf:{n:"Safety Checks",c:"#e89b0c",d:"When a drug must not be given"},
+  cp:{n:"Chief Complaint Protocols",c:"#7a4fd6",d:"Which protocol for which complaint"},
+  st:{n:"Sets and Steps",c:"#0e9aa7",d:"Matching kit, MONA and blood sugar steps"}
+};
+const KEYS = Object.keys(DOMAINS);
+const LET = ["A","B","C","D"];
+const $ = id => document.getElementById(id);
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const fmt = s => Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cnt = k => BANK.filter(b=>b[0]===k).length;
+
+let S = null, timer = null, last = store.get("siehs_drug_last");
+
+/* ---------- Welcome ---------- */
+$("areas").innerHTML = KEYS.map(k=>`<button type="button" class="area" data-k="${k}" style="--c:${DOMAINS[k].c}"><b>${DOMAINS[k].n}</b><span>${DOMAINS[k].d}</span><em>${cnt(k)} questions · Start here</em></button>`).join("");
+function show(id){ ["welcome","quiz","result"].forEach(x=>$(x).hidden = x!==id); window.scrollTo(0,0); }
+function renderLast(){
+  if(!last){ $("lastBox").hidden = true; return; }
+  $("lastBox").hidden = false;
+  $("lastScore").textContent = last.score + "/100";
+  $("lastMeta").textContent = `${last.name}, ${last.desig} · ${last.grade} · ${last.date}`;
+}
+renderLast();
+$("desig").addEventListener("change",()=>{ const o=$("desig").value==="__other"; $("otherWrap").hidden=!o; if(o) $("otherDesig").focus(); });
+
+function readForm(){
+  const name = $("name").value.trim(); let desig = $("desig").value;
+  if(!name){ $("startErr").textContent = "Enter your full name to begin."; $("name").focus(); return null; }
+  if(!desig){ $("startErr").textContent = "Select your designation to begin."; $("desig").focus(); return null; }
+  if(desig==="__other"){ desig = $("otherDesig").value.trim(); if(!desig){ $("startErr").textContent = "Type your designation to begin."; $("otherDesig").focus(); return null; } }
+  $("startErr").textContent = ""; return {name,desig};
+}
+$("startForm").addEventListener("submit",e=>{ e.preventDefault(); const f=readForm(); if(f) startQuiz(f.name,f.desig,null); });
+$("areas").addEventListener("click",e=>{
+  const b=e.target.closest(".area"); if(!b) return;
+  const f=readForm(); if(f) startQuiz(f.name,f.desig,b.dataset.k);
+  else $("startForm").scrollIntoView({behavior:"smooth",block:"center"});
+});
+
+/* ---------- Quiz ---------- */
+function startQuiz(name, desig, startDomain){
+  const items = [];
+  KEYS.forEach(k=>{
+    shuffle(BANK.map((b,i)=>i).filter(i=>BANK[i][0]===k)).forEach(bi=>{
+      const b=BANK[bi], opts=shuffle([b[3],...b[4]]);
+      items.push({bi, d:k, opts, correct:opts.indexOf(b[3]), pick:null, skipped:false});
+    });
+  });
+  S = { name, desig, items, i:0, t0:Date.now(), streak:0, res:null };
+  if(startDomain) S.i = items.findIndex(x=>x.d===startDomain);
+  $("qwho").textContent = `${name} · ${desig}`;
+  clearInterval(timer);
+  timer = setInterval(()=>{ $("qtime").textContent = fmt(Math.round((Date.now()-S.t0)/1000)); },1000);
+  show("quiz"); renderQ();
+}
+const scoreNow = () => S.items.filter(x=>x.pick===x.correct).length;
+const unanswered = () => S.items.filter(x=>x.pick===null).length;
+
+function renderTabs(){
+  const cur = S.items[S.i].d;
+  $("tabs").innerHTML = KEYS.map(k=>{
+    const its = S.items.filter(x=>x.d===k), a = its.filter(x=>x.pick!==null).length;
+    return `<button type="button" class="tabbtn" data-k="${k}" style="--c:${DOMAINS[k].c}" ${k===cur?'aria-current="true"':''}><b>${DOMAINS[k].n}</b><small>${a}/${its.length} answered</small></button>`;
+  }).join("");
+  const act = $("tabs").querySelector('[aria-current="true"]'); if(act) act.scrollIntoView({inline:"center",block:"nearest"});
+}
+$("tabs").addEventListener("click",e=>{
+  const b=e.target.closest(".tabbtn"); if(!b) return;
+  const k=b.dataset.k; let idx=S.items.findIndex(x=>x.d===k&&x.pick===null);
+  if(idx<0) idx=S.items.findIndex(x=>x.d===k);
+  goTo(idx);
+});
+function renderMap(){
+  $("dots").innerHTML = S.items.map((x,k)=>{
+    const c = x.pick!==null ? (x.pick===x.correct?"ok":"no") : (x.skipped?"sk":"");
+    return `<button type="button" class="${c} ${k===S.i?"cur":""}" data-i="${k}" aria-label="Question ${k+1}">${k+1}</button>`;
+  }).join("");
+  const u=unanswered(); $("finishNow").textContent = u? `Finish and see result (${u} unanswered)` : "Finish and see result";
+}
+$("dots").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) goTo(+b.dataset.i); });
+function goTo(i){ S.i=i; renderQ(); window.scrollTo({top:0,behavior:"smooth"}); }
+
+function renderQ(){
+  const it = S.items[S.i], b = BANK[it.bi], d = DOMAINS[it.d], n = S.items.length;
+  $("qcount").textContent = `Question ${S.i+1} of ${n}`;
+  $("qscore").textContent = `Score ${scoreNow()}`;
+  $("qstreak").hidden = S.streak<2; $("qstreak").textContent = `Streak ${S.streak}`;
+  $("done").style.width = (S.i/n*86+4)+"%";
+  $("ambMove").style.left = `calc((100% - 150px) * ${S.i/(n-1)})`;
+  renderTabs(); renderMap();
+  const inSec = S.items.filter(x=>x.d===it.d), pos = inSec.indexOf(it)+1;
+  $("qbody").style.animation="none"; void $("qbody").offsetWidth; $("qbody").style.animation="";
+  $("qbody").innerHTML = `
+    <div class="tagrow"><span class="tag" style="--c:${d.c}">${d.n}</span><span class="tag plain">${esc(b[1])}</span><span class="qnum">${pos} of ${inSec.length} in this area</span></div>
+    <div class="qtext">${esc(b[2])}</div>
+    <div class="opts" role="group" aria-label="Answer options">
+      ${it.opts.map((o,k)=>`<button type="button" class="opt" data-k="${k}"><span class="k">${LET[k]}</span><span class="t">${esc(o)}</span></button>`).join("")}
+    </div>
+    <div id="fbBox"></div>
+    <div class="actions">
+      <button type="button" class="btn ghost sm" id="prevBtn" ${S.i===0?"disabled":""}>Previous</button>
+      <span class="r" id="nextSlot"></span>
+    </div>
+    <p class="hint" style="margin:12px 0 0">Keys: A to D answer, S skip, Enter next, left arrow previous.</p>`;
+  $("qbody").querySelectorAll(".opt").forEach(btn=>btn.addEventListener("click",()=>answer(+btn.dataset.k)));
+  $("prevBtn").addEventListener("click",()=>goTo(S.i-1));
+  if(it.pick!==null) paint(it,false); else slot(false);
+}
+function slot(answered){
+  const lastQ = S.i===S.items.length-1;
+  $("nextSlot").innerHTML = answered
+    ? `<button type="button" class="btn ${lastQ?"red":""}" id="nextBtn">${lastQ?"Finish and see result":"Next question"}</button>`
+    : `<button type="button" class="btn ghost" id="skipBtn">${lastQ?"Skip and finish":"Skip question"}</button>`;
+  if(answered){ $("nextBtn").addEventListener("click",next); }
+  else { $("skipBtn").addEventListener("click",skip); }
+}
+function paint(it,fresh){
+  const b = BANK[it.bi], ok = it.pick===it.correct;
+  $("qbody").querySelectorAll(".opt").forEach((btn,j)=>{
+    btn.disabled = true;
+    if(j===it.correct) btn.classList.add("right");
+    else if(j===it.pick) btn.classList.add("wrong");
+    else btn.classList.add("dim");
+  });
+  let html = `<div class="fb ${ok?"ok":"no"}"><b>${ok?"Correct.":"Not quite."}</b> ${ok?"":`The right answer is <b>${esc(it.opts[it.correct])}</b>. `}${esc(b[5])}</div>`;
+  const its = S.items.filter(x=>x.d===it.d);
+  if(its.every(x=>x.pick!==null)){
+    const c = its.filter(x=>x.pick===x.correct).length;
+    html += `<div class="sec-done"><b>${DOMAINS[it.d].n} complete:</b> ${c} of ${its.length} correct.</div>`;
+  }
+  $("fbBox").innerHTML = html; slot(true);
+  if(fresh) $("nextBtn").focus({preventScroll:true});
+}
+function answer(k){
+  const it = S.items[S.i]; if(it.pick!==null) return;
+  it.pick = k; it.skipped = false;
+  if(k===it.correct) S.streak++; else S.streak=0;
+  $("qscore").textContent = `Score ${scoreNow()}`;
+  $("qstreak").hidden = S.streak<2; $("qstreak").textContent = `Streak ${S.streak}`;
+  paint(it,true); renderTabs(); renderMap();
+}
+function skip(){ const it=S.items[S.i]; it.skipped=true; S.streak=0; next(); }
+function next(){ if(S.i<S.items.length-1){ goTo(S.i+1); } else finish(); }
+$("finishNow").addEventListener("click",finish);
+document.addEventListener("keydown",e=>{
+  if($("quiz").hidden || !S || e.target.tagName==="INPUT" || e.target.tagName==="SELECT") return;
+  const it=S.items[S.i], key=e.key.toLowerCase();
+  const k = {a:0,b:1,c:2,d:3,"1":0,"2":1,"3":2,"4":3}[key];
+  if(k!==undefined && it.pick===null){ answer(k); return; }
+  if(key==="s" && it.pick===null){ skip(); return; }
+  if((key==="enter"||key==="arrowright") && it.pick!==null && document.activeElement.id!=="nextBtn"){ e.preventDefault(); next(); }
+  if(key==="arrowleft" && S.i>0) goTo(S.i-1);
+});
+
+/* ---------- Result ---------- */
+const PASS_MARK=70;
+function gradeFor(p){
+  if(p>=90) return {g:"Outstanding",c:"#4be08c",t:"Excellent command of ambulance drugs and protocols. Ready to help coach others."};
+  if(p>=75) return {g:"Proficient",c:"#9be564",t:"Good working knowledge with a few gaps to close."};
+  if(p>=50) return {g:"Developing",c:"#ffd166",t:"The basics are there, but several areas need a refresher."};
+  return {g:"Needs retraining",c:"#ff8a8a",t:"Drug and protocol knowledge needs more practice. Revise the areas below and retake."};
+}
+function finish(){
+  clearInterval(timer);
+  const n=S.items.length, secs=Math.round((Date.now()-S.t0)/1000), sc=scoreNow();
+  const wrong=S.items.filter(x=>x.pick!==null&&x.pick!==x.correct).length, skipped=unanswered(), gr=gradeFor(sc/n*100);
+  const dom={}; KEYS.forEach(k=>dom[k]={t:0,c:0,u:0,miss:{}});
+  S.items.forEach(it=>{ const b=BANK[it.bi], d=dom[it.d]; d.t++; if(it.pick===it.correct) d.c++; else { if(it.pick===null) d.u++; d.miss[b[1]]=(d.miss[b[1]]||0)+1; } });
+  const date=new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+  S.res={sc,wrong,skipped,secs,gr,dom,date};
+  last={name:S.name,desig:S.desig,score:sc,grade:gr.g,date}; store.set("siehs_drug_last",last); renderLast();
+
+  $("rName").textContent=`${S.name} · ${S.desig}`;
+  $("rGrade").textContent=gr.g; $("rGrade").style.setProperty("--gc",gr.c);
+  $("rMeta").innerHTML=`<span>Date <b>${date}</b></span><span>Time taken <b>${fmt(secs)}</b></span><span>Prepared by <b>Irum Naz</b></span>`;
+  $("tiles").innerHTML=[
+    [sc,"Correct answers","var(--green)"],[wrong,"Incorrect answers","var(--red)"],
+    [skipped,"Skipped or unanswered","var(--amber)"],[fmt(secs),"Time taken","var(--blue)"]
+  ].map(t=>`<div class="tile" style="border-top:5px solid ${t[2]}"><b>${t[0]}</b><span>${t[1]}</span></div>`).join("");
+  $("backQuiz").hidden = skipped===0;
+
+  const rows=Object.entries(dom).map(([k,v])=>({k,...v,p:Math.round(v.c/v.t*100)}));
+  $("domains").innerHTML=rows.map(r=>`<div class="dom" style="--c:${DOMAINS[r.k].c}"><div class="n">${DOMAINS[r.k].n} <small>${r.c}/${r.t}${r.u?` · ${r.u} skipped`:""}</small></div><div class="p">${r.p}%</div><div class="bar"><i data-w="${r.p}"></i></div></div>`).join("");
+  const sorted=rows.slice().sort((a,b)=>b.p-a.p);
+  const strong=sorted.filter(r=>r.p>=80), weak=sorted.slice().reverse().filter(r=>r.p<80).slice(0,3);
+  $("strengths").innerHTML=(strong.length?strong:sorted.slice(0,1)).map(r=>`<li><b>${DOMAINS[r.k].n}</b> at ${r.p}%</li>`).join("");
+  $("focus").innerHTML=weak.length?weak.map(r=>{
+    const m=Object.entries(r.miss).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(", ");
+    return `<li><b>${DOMAINS[r.k].n}</b> at ${r.p}%${m?`. Revisit: ${esc(m)}`:""}</li>`;
+  }).join(""):"<li>No area below 80%. Maintain through regular drills.</li>";
+  const best=sorted[0], worst=sorted[sorted.length-1];
+  $("summary").textContent=`${S.name} (${S.desig}) scored ${sc} out of ${n}, rated ${gr.g}. ${gr.t} The strongest area was ${DOMAINS[best.k].n} (${best.p}%) and the weakest was ${DOMAINS[worst.k].n} (${worst.p}%). ${skipped?`${skipped} questions were skipped or left unanswered and count as zero. `:""}The assessment took ${fmt(secs)}.`;
+  const pass=sc>=PASS_MARK;
+  S.cid = S.cid || ("EDP-"+new Date().toISOString().slice(2,10).replace(/-/g,"")+"-"+Math.random().toString(36).slice(2,6).toUpperCase());
+  $("certLock").hidden=pass; $("certWrap").hidden=!pass;
+  if(pass){ $("cName").textContent=S.name; $("cDesig").textContent=S.desig; $("cScore").textContent=sc; $("cGrade").textContent=gr.g; $("cDate").textContent=date; $("cId").textContent=S.cid; }
+  else { $("certLockMsg").textContent=`Score ${PASS_MARK} or more to unlock your certificate. You scored ${sc}, so you need ${PASS_MARK-sc} more correct answers. ${skipped?"Go back to your skipped questions or retake the assessment.":"Retake the assessment to try again."}`; }
+  buildReview("all"); show("result");
+
+  setTimeout(()=>{
+    $("ringArc").style.strokeDashoffset=326.7*(1-sc/n);
+    document.querySelectorAll(".bar i").forEach(i=>i.style.width=i.dataset.w+"%");
+    let c=0; const iv=setInterval(()=>{ c=Math.min(sc,c+Math.ceil(sc/40||1)); $("rScore").textContent=c; if(c>=sc) clearInterval(iv); },30);
+    if(sc>=75) confetti();
+  },80);
+}
+function buildReview(f){
+  $("rev").innerHTML=S.items.map((it,k)=>({it,k})).filter(({it})=>{
+    const st=it.pick===null?"sk":(it.pick===it.correct?"ok":"no"); return f==="all"||f===st;
+  }).map(({it,k})=>{
+    const b=BANK[it.bi], st=it.pick===null?"sk":(it.pick===it.correct?"ok":"no"), d=DOMAINS[it.d];
+    const mine = st==="sk" ? `<span>Your answer: <em style="color:var(--amber)">Skipped</em></span>` : `<span>Your answer: <em style="color:${st==="ok"?"var(--green)":"var(--red)"}">${LET[it.pick]}. ${esc(it.opts[it.pick])}</em></span>`;
+    return `<div class="ri ${st==="ok"?"":st}"><div class="h"><b>Q${k+1}</b><span class="tag" style="--c:${d.c}">${d.n}</span><span>${esc(b[1])}</span></div>
+      <div class="q">${esc(b[2])}</div>
+      <div class="a">${mine}${st==="ok"?"":`<span>Correct answer: <em style="color:var(--green)">${LET[it.correct]}. ${esc(it.opts[it.correct])}</em></span>`}</div>
+      <div class="x">${esc(b[5])}</div></div>`;
+  }).join("")||`<div class="card panel">Nothing to show for this filter.</div>`;
+}
+$("filters").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  $("filters").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  buildReview(b.dataset.f);
+});
+$("retake").addEventListener("click",()=>startQuiz(S.name,S.desig,null));
+$("backQuiz").addEventListener("click",()=>{ const i=S.items.findIndex(x=>x.pick===null); S.t0=Date.now()-S.res.secs*1000;
+  timer=setInterval(()=>{ $("qtime").textContent=fmt(Math.round((Date.now()-S.t0)/1000)); },1000); show("quiz"); goTo(i<0?0:i); });
+$("toStart").addEventListener("click",()=>show("welcome"));
+$("copySum").addEventListener("click",()=>{
+  const r=S.res, t=`SIEHS Emergency Drug and Protocol Knowledge Assessment\nPrepared by Irum Naz\n${r.sc>=PASS_MARK?`Certificate no.: ${S.cid}\n`:""}Name: ${S.name}\nDesignation: ${S.desig}\nScore: ${r.sc}/100 (${r.gr.g})\nCorrect ${r.sc}, incorrect ${r.wrong}, skipped ${r.skipped}\nDate: ${r.date}\nTime taken: ${fmt(r.secs)}\n`+Object.entries(r.dom).map(([k,v])=>`${DOMAINS[k].n}: ${v.c}/${v.t}`).join("\n");
+  const box=$("sumBox"); box.value=t; box.hidden=false; box.select();
+  try{ navigator.clipboard.writeText(t).then(()=>{$("copySum").textContent="Copied";},()=>{}); }catch(e){}
+});
+
+/* ---------- Confetti ---------- */
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  const cv=$("confetti"), cx=cv.getContext("2d"); cv.hidden=false; cv.width=innerWidth; cv.height=innerHeight;
+  const cols=["#16984f","#d62839","#1c6fe0","#f4c542","#ffffff"];
+  const ps=Array.from({length:110},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.6,s:4+Math.random()*6,v:2+Math.random()*3.5,r:Math.random()*6,w:Math.random()*.2-.1,c:cols[Math.floor(Math.random()*cols.length)]}));
+  let f=0;(function tick(){ cx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{p.y+=p.v;p.x+=Math.sin(p.r)*1.2;p.r+=p.w+.08;cx.fillStyle=p.c;cx.fillRect(p.x,p.y,p.s,p.s*.6);});
+    if(++f<190) requestAnimationFrame(tick); else { cx.clearRect(0,0,cv.width,cv.height); cv.hidden=true; } })();
+}
+</script>
+
+</body></html>
